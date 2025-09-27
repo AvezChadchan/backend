@@ -1,0 +1,14 @@
+{
+  "name": "production_backend",
+  "version": "1.0.0",
+  "description": "nothig",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "js"
+  ],
+  "author": "avez",
+  "license": "ISC"
+}
