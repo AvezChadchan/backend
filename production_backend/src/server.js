@@ -2,9 +2,9 @@
 //first import dotenv in the main file
 import dotenv from "dotenv";
 import connectDB from "./db/index.js";
-import express from "express";
+import { app } from "./app.js";
 import { asyncHandler } from "./utils/asyncHandler.js";
-const app = express();
+
 dotenv.config();
 connectDB()
   .then((req, res) => {

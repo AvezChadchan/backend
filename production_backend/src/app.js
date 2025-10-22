@@ -13,4 +13,12 @@ app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public")); //storing assets in public folder
 app.use(cookieParser()); //used to access user's cookie and set
+
+//routes import
+import userRouter from "./routes/user.routes.js";
+
+//router declaration
+app.use("/api/v1/users", userRouter);
+
+// http://lcoalhost/8000/api/v1/users/register
 export { app };
