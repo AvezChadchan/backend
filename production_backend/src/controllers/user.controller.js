@@ -18,8 +18,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   //1-data getting
   const { fullname, username, email, password } = req.body;
-  console.log("Email: ", email);
-
+  // console.log("Email: ", email);
   // console.log(req.body);
 
   //2- /validation/
@@ -39,13 +38,23 @@ const registerUser = asyncHandler(async (req, res) => {
   if (existedUser) {
     throw new apiError(409, "User with email or username Already exists ");
   }
-  // console.log(existedUser);
 
-  //4- images
+  //4- taking path of images
   const avatarLocalPath = req.files?.avatar[0]?.path;
   // console.log(req.files);
   // console.log(avatarLocalPath);
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+
+  // const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  //or
+  let coverImageLocalPath;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  ) {
+    coverImageLocalPath = req.files.coverImage[0].path;
+  }
+
   if (!avatarLocalPath) {
     throw new apiError(400, "Avatar Image is Reguired");
   }
@@ -69,7 +78,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   //7- remove pass and referesh token from response
   //mongodb automatically creates _id for each row/entry
-  //select method is used to select some fields which we don't want to show
+  //select method is used to select some fields which we don't want to show to the user in the response 
   const createdUser = await User.findById(userEntry._id).select(
     "-password -refreshToken"
   );
@@ -80,9 +89,9 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // 9- sending response
-  return res.status(201).json(
-    new apiResponse(200,createdUser,"User Registered Successfully")
-  );
+  return res
+    .status(201)
+    .json(new apiResponse(200, createdUser, "User Registered Successfully"));
 });
 
 export { registerUser };
