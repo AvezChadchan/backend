@@ -3,6 +3,7 @@ import { apiError } from "../utils/apiError.js";
 import { User } from "../models/users.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { apiResponse } from "../utils/apiResponse.js";
+console.log("📩 Register endpoint hit");
 
 const registerUser = asyncHandler(async (req, res) => {
   // get user details from frontend
@@ -18,9 +19,7 @@ const registerUser = asyncHandler(async (req, res) => {
   //1-data getting
   const { fullname, username, email, password } = req.body;
   console.log("Email: ", email);
-  res.status(200).json({
-    message: "data received",
-  });
+
   // console.log(req.body);
 
   //2- /validation/
@@ -34,7 +33,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   //3- user already exists
-  const existedUser = User.findOne({
+  const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
   if (existedUser) {
@@ -64,14 +63,14 @@ const registerUser = asyncHandler(async (req, res) => {
     avatar: avatar.url,
     coverImage: coverImage?.url || "",
     email,
-    usernam: username.toLowerCase(),
+    username: username.toLowerCase(),
     password,
   });
 
   //7- remove pass and referesh token from response
   //mongodb automatically creates _id for each row/entry
   //select method is used to select some fields which we don't want to show
-  const createdUser = await User.findById(User._id).select(
+  const createdUser = await User.findById(userEntry._id).select(
     "-password -refreshToken"
   );
 
@@ -83,7 +82,7 @@ const registerUser = asyncHandler(async (req, res) => {
   // 9- sending response
   return res.status(201).json(
     new apiResponse(200,createdUser,"User Registered Successfully")
-  )
+  );
 });
 
 export { registerUser };
